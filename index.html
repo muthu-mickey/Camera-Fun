@@ -4,103 +4,84 @@
 <meta charset="UTF-8">
 <meta name="viewport"
 content="width=device-width, initial-scale=1">
-
-<title>Live Camera & Voice</title>
+<title>My Live Connect</title>
 
 <style>
 body {
-  background: #111827;
+  background: linear-gradient(135deg,#111827,#581c87);
   color: white;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   text-align: center;
-  padding: 20px;
+  padding: 30px;
 }
-
-video {
-  width: 100%;
-  max-width: 400px;
-  background: black;
-  border-radius: 15px;
-  margin-top: 20px;
+.card {
+  background: #ffffff15;
+  padding: 25px;
+  border-radius: 20px;
 }
-
 button {
-  padding: 15px;
-  margin: 10px;
-  border: none;
-  border-radius: 10px;
+  background: #a855f7;
   color: white;
-  font-size: 16px;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  font-size: 17px;
+  margin: 10px;
 }
-
-.start { background: green; }
-.stop { background: red; }
-
+.stop { background: #ef4444; }
 </style>
 </head>
 
 <body>
 
-<h2>📷 Live Camera + 🎤 Voice</h2>
+<h1>💜 My Live Connect</h1>
+
+<div class="card">
+
+<h2>📷 Camera + 🎤 Voice</h2>
 
 <p>
-Camera and microphone sharing
-require your permission.
+Your camera and microphone will be shared
+only after you choose to join.
 </p>
 
-<button class="start" onclick="startSharing()">
-Start Camera & Mic
+<button onclick="joinCall()">
+✅ Accept & Start
 </button>
 
-<button class="stop" onclick="stopSharing()">
-Stop Sharing
+<button class="stop" onclick="stopCall()">
+🛑 Stop
 </button>
 
-<video id="video"
-autoplay playsinline muted></video>
+<p id="status">🔴 Not Connected</p>
 
-<h3 id="status">🔴 Camera & Mic OFF</h3>
+</div>
 
 <script>
+let callWindow = null;
 
-let stream = null;
+function joinCall() {
+  document.getElementById("status").innerText =
+    "🟢 Opening Video Call";
 
-async function startSharing() {
-  try {
-    if (stream) return;
+  callWindow = window.open(
+    "https://meet.jit.si/MyLiveConnectPrivate2026",
+    "_blank"
+  );
 
-    stream =
-      await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true
-      });
-
-    document.getElementById("video")
-      .srcObject = stream;
-
-    document.getElementById("status")
-      .innerText = "🟢 Camera & Mic ON";
-
-  } catch (error) {
-    alert("Camera and microphone permission required");
+  if (!callWindow) {
+    alert("Please allow pop-ups to join the call.");
   }
 }
 
-function stopSharing() {
-  if (stream) {
-    stream.getTracks().forEach(track => track.stop());
-    stream = null;
+function stopCall() {
+  if (callWindow && !callWindow.closed) {
+    callWindow.close();
   }
 
-  document.getElementById("video")
-    .srcObject = null;
-
-  document.getElementById("status")
-    .innerText = "🔴 Camera & Mic OFF";
+  document.getElementById("status").innerText =
+    "🔴 Disconnected";
 }
-
-window.addEventListener("pagehide", stopSharing);
-
 </script>
 
 </body>
