@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camera Sharing</title>
+
+  <style>
+    body {
+      background: #111827;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 30px;
+    }
+
+    video {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 15px;
+      background: black;
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 15px 25px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .start {
+      background: #22c55e;
+      color: white;
+    }
+
+    .stop {
+      background: #ef4444;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>📸 Live Camera Sharing</h2>
+
+  <p>Camera sharing starts only with your permission.</p>
+
+  <button class="start" onclick="startCamera()">
+    Start Camera
+  </button>
+
+  <button class="stop" onclick="stopCamera()">
+    Stop Camera
+  </button>
+
+  <video id="camera" autoplay playsinline muted></video>
+
+  <p id="status">Camera is OFF 🔴</p>
+
+  <script>
+    let stream = null;
+
+    async function startCamera() {
+      try {
+        if (stream) return;
+
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false
+        });
+
+        document.getElementById("camera").srcObject = stream;
+
+        document.getElementById("status").innerText =
+          "Camera is ON 🟢";
+
+      } catch (error) {
+        alert("Camera permission is required.");
+      }
+    }
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+
+      document.getElementById("camera").srcObject = null;
+
+      document.getElementById("status").innerText =
+        "Camera is OFF 🔴";
+    }
+  </script>
+
+</body>
+</html>
