@@ -1,100 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Camera Sharing</title>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1">
 
-  <style>
-    body {
-      background: #111827;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 30px;
-    }
+<title>Live Camera & Voice</title>
 
-    video {
-      width: 100%;
-      max-width: 400px;
-      border-radius: 15px;
-      background: black;
-      margin-top: 20px;
-    }
+<style>
+body {
+  background: #111827;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+  padding: 20px;
+}
 
-    button {
-      padding: 15px 25px;
-      margin: 10px;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-    }
+video {
+  width: 100%;
+  max-width: 400px;
+  background: black;
+  border-radius: 15px;
+  margin-top: 20px;
+}
 
-    .start {
-      background: #22c55e;
-      color: white;
-    }
+button {
+  padding: 15px;
+  margin: 10px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+}
 
-    .stop {
-      background: #ef4444;
-      color: white;
-    }
-  </style>
+.start { background: green; }
+.stop { background: red; }
+
+</style>
 </head>
 
 <body>
 
-  <h2>📸 Live Camera Sharing</h2>
+<h2>📷 Live Camera + 🎤 Voice</h2>
 
-  <p>Camera sharing starts only with your permission.</p>
+<p>
+Camera and microphone sharing
+require your permission.
+</p>
 
-  <button class="start" onclick="startCamera()">
-    Start Camera
-  </button>
+<button class="start" onclick="startSharing()">
+Start Camera & Mic
+</button>
 
-  <button class="stop" onclick="stopCamera()">
-    Stop Camera
-  </button>
+<button class="stop" onclick="stopSharing()">
+Stop Sharing
+</button>
 
-  <video id="camera" autoplay playsinline muted></video>
+<video id="video"
+autoplay playsinline muted></video>
 
-  <p id="status">Camera is OFF 🔴</p>
+<h3 id="status">🔴 Camera & Mic OFF</h3>
 
-  <script>
-    let stream = null;
+<script>
 
-    async function startCamera() {
-      try {
-        if (stream) return;
+let stream = null;
 
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-          audio: false
-        });
+async function startSharing() {
+  try {
+    if (stream) return;
 
-        document.getElementById("camera").srcObject = stream;
+    stream =
+      await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+      });
 
-        document.getElementById("status").innerText =
-          "Camera is ON 🟢";
+    document.getElementById("video")
+      .srcObject = stream;
 
-      } catch (error) {
-        alert("Camera permission is required.");
-      }
-    }
+    document.getElementById("status")
+      .innerText = "🟢 Camera & Mic ON";
 
-    function stopCamera() {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        stream = null;
-      }
+  } catch (error) {
+    alert("Camera and microphone permission required");
+  }
+}
 
-      document.getElementById("camera").srcObject = null;
+function stopSharing() {
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+    stream = null;
+  }
 
-      document.getElementById("status").innerText =
-        "Camera is OFF 🔴";
-    }
-  </script>
+  document.getElementById("video")
+    .srcObject = null;
+
+  document.getElementById("status")
+    .innerText = "🔴 Camera & Mic OFF";
+}
+
+window.addEventListener("pagehide", stopSharing);
+
+</script>
 
 </body>
 </html>
